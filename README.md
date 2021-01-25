@@ -1,6 +1,6 @@
 # Cookiecutter Data Science
 
-_A template for doing data science project, based on cookiecutter-data-science. Modified to use a docker and DVC based workflow_
+_A template for doing data science project, based on cookiecutter-data-science. Modified to use a conda and DVC based workflow_
 
 
 #### [Project homepage](https://github.com/bramathon/cookiecutter-data-science)

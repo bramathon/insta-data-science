@@ -1,59 +1,26 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-orbs:
-  # Declare a dependency on aws-ecr
-  aws-ecr: circleci/aws-ecr@6.12.2
-  # Declare a dependency on the docker-orb
-  docker: circleci/docker@1.4.0
-
-# Executors provide the environment for jobs
-executors:
-  # First we need an executor for building our docker image
-  repo-image-builder:
-    machine:
-      docker_layer_caching: true
-      image: ubuntu-1604:202007-01
-    environment:
-      # make sure the latest build engine is enabled. See Docker BuildKit for more info
-      DOCKER_BUILDKIT: '1'
-  # Next, we'll use the docker image we just build to run our tests 
-  repo-image:
-    docker:
-      - image: ${DOCKER_REGISTRY_URL}/${DOCKER_IMAGE_NAME}:${CIRCLE_SHA1}
-        environment:
-          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-        aws_auth:
-          aws_access_key_id: ${AWS_ACCESS_KEY_ID}
-          aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-
-# Define the jobs here:
-# jobs are a collection of steps which are executed in series
 jobs:
-  # This is a basic job to run the unit tests
-  unit-tests:
-    # Run the job in the repo-image
-    executor: repo-image
-    steps:
-      - checkout
-      - run: python -m unittest test.basic_tests
+  build:
+    docker:
+      - image: continuumio/miniconda3
 
-# Workflows orchestrate or schedule a set of jobs
-workflows:
-  # Name the workflow "build-and-test"
-  build-and-test:
-    jobs:
-      # Our first job is to build the image and push to the registry
-      - aws-ecr/build-and-push-image:
-          name: docker-build
-          executor:
-            name: repo-image-builder
-          account-url: DOCKER_REGISTRY_URL # registry URL from AWS
-          region: AWS_REGION
-          repo: ${DOCKER_IMAGE_NAME} # name of the image (huami-nte/blood-pressure)
-          tag: ${CIRCLE_SHA1}
-      # Second, we run the unit tests. This job requires that the build job completed
-      - unit-tests:
-          requires:
-            - docker-build
+    working_directory: ~/repo
+
+    steps:
+      # Step 1: obtain repo
+      - checkout
+      # Step 2: create virtual env and install dependencies
+      - run:
+          name: install dependencies
+          command: |
+            conda env create -f environment.yml
+
+      # Step 3: run linter and tests
+      - run:
+          name: run tests
+          command: |
+            conda init bash
+            source activate {{ cookiectter.repo_name }}
+            python -m unittest test.basic_tests

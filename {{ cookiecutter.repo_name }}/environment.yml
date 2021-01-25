@@ -1,0 +1,36 @@
+name: {{ cookiecutter.repo_name }}
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+
+  # The basics
+  - numpy
+  - pandas
+  - scipy
+
+  # Development
+  - awscli
+  - black
+  - dvc
+  - pre-commit
+  - jupyterlab
+  - jupyterlab-git
+
+  # Machine-learning
+  - scikit-learn
+  - tensorflow-gpu
+  - xgboost
+  
+  # Plotting
+  - matplotlib
+  - plotly::plotly
+  - plotly::python-kaleido
+
+  # Pip
+  - pip
+  - pip:
+      - wandb
+      - python-language-server[all]
+      

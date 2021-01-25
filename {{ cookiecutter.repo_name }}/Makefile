@@ -8,28 +8,47 @@ BUCKET = {{ cookiecutter.s3_bucket }}
 PROFILE = {{ cookiecutter.aws_profile }}
 PROJECT_NAME = {{ cookiecutter.repo_name }}
 
+CONDA_ROOT=$(shell conda info --base)
+MY_ENV_DIR=$(CONDA_ROOT)/envs/$(ENV_NAME)
+
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 
-## Create the docker images
-build:
-	docker-compose build
+## Set up python interpreter environment
+environment: environment.yml
+ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
+	conda env update $(PROJECT_NAME) --file environment.yml --prune
+else
+	conda env create -f environment.yml
+endif
+	@echo ">>> Conda env $(PROJECT_NAME) ready. Activate with 'conda activate $(PROJECT_NAME)'"
 
-## Start the containers
-start:
-	docker-compose up -d
+## Test python environment is set-up correctly
+test_environment:
+ifneq (${CONDA_DEFAULT_ENV}, $(PROJECT_NAME))
+	$(error Must activate `$(PROJECT_NAME)` environment before proceeding)
+endif
 
-## Start a shell inside the container
-bash:
-	docker-compose exec notebook bash
+## Build Jupyter Lab
+jupyter: test_environment
+	ipython kernel install --name $(ENV_NAME) --user
+	$(MY_ENV_DIR)/bin/jupyter labextension install @jupyter-widgets/jupyterlab-manager
+	$(MY_ENV_DIR)/bin/jupyter labextension install jupyterlab-plotly
+	$(MY_ENV_DIR)/bin/jupyter labextension install plotlywidget
+	$(MY_ENV_DIR)/bin/jupyter labextension install jupyterlab-theme-solarized-dark
+	$(MY_ENV_DIR)/bin/jupyter lab build --name "$(PROJECT_NAME)"
 
-stop:
-	docker-compose stop
+## Lint using black
+lint:
+	black --verbose --target-version py38 .
+
+# Run the unit tests
+test:
+	python -m unittest test.basic_tests
 
 ## Delete all compiled Python files, clean up stopped containers
 clean:
-	docker container prune
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
