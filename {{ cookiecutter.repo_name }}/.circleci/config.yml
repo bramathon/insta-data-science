@@ -22,5 +22,5 @@ jobs:
           name: run tests
           command: |
             conda init bash
-            source activate {{ cookiectter.repo_name }}
+            source activate {{ cookiecutter.repo_name }}
             python -m unittest test.basic_tests
