@@ -15,14 +15,15 @@ MY_ENV_DIR=$(CONDA_ROOT)/envs/$(ENV_NAME)
 # COMMANDS                                                                      #
 #################################################################################
 
-## Set up python interpreter environment
-environment: environment.yml
+## Set up python interpreter environment and produce an environment.lock with exact package versions
+environment.lock: environment.yml
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
 	conda env update $(PROJECT_NAME) --file environment.yml --prune
 else
 	conda env create -f environment.yml
 endif
 	@echo ">>> Conda env $(PROJECT_NAME) ready. Activate with 'conda activate $(PROJECT_NAME)'"
+	conda list --explicit > environment.lock
 
 ## Test python environment is set-up correctly
 test_environment:
@@ -32,7 +33,6 @@ endif
 
 ## Build Jupyter Lab
 jupyter: test_environment
-	ipython kernel install --name $(ENV_NAME) --user
 	$(MY_ENV_DIR)/bin/jupyter labextension install @jupyter-widgets/jupyterlab-manager
 	$(MY_ENV_DIR)/bin/jupyter labextension install jupyterlab-plotly
 	$(MY_ENV_DIR)/bin/jupyter labextension install plotlywidget
