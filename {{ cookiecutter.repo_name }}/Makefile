@@ -23,7 +23,7 @@ else
 	conda env create -f environment.yml
 endif
 	@echo ">>> Conda env $(PROJECT_NAME) ready. Activate with 'conda activate $(PROJECT_NAME)'"
-	conda list --explicit > environment.lock
+	conda list -n $(PROJECT_NAME) --explicit > environment.lock
 
 ## Test python environment is set-up correctly
 test_environment:

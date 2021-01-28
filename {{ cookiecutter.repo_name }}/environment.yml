@@ -32,4 +32,5 @@ dependencies:
   - pip
   - pip:
       - wandb
+      - virtualenv==20.0.23 # pre-commit doesn't work with default version
       - python-language-server[all]

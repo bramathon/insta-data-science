@@ -57,50 +57,36 @@ Project Organization
 
 ## Initialize git
 
+For more info see: https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud
+
 ```bash
 git init
 ```
 
+You will probably want to set the remote:
+
+```bash
+git remote set-url git@bitbucket.org:USERNAME/{{cookiecutter.project_name}}.git
+```
+
 ## Initialize dvc
+
+For more info see: https://dvc.org/doc
 
 ```bash
 dvc init
 git commit -m 'Initialized DVC'
 ```
 
-## Add your data
-
-The first thing to do is add the raw data. Put it in data/raw and use the dvc add command eg.
+Usually, we want to set a remote as well. Make sure your amazon account is configured
 
 ```bash
-cp raw_data.csv to data/raw/
-docker-compose run --rm dvc add 
+aws configure list
+dvc remote add -d myremote s3://{{cookiecutter.project_name}}/cache
 ```
 
-## Downloading data
 
-Use the DVC pull and push commands to pull the data files from the cache. The DVC docker container can be used for this:
-
-```bash
-docker-compose run --rm dvc pull
-docker-compose run --rm dvc push
-```
-
-## Train the model (example)
-
-To build the project, run
-
-```bash
-docker-compose run dvc repro
-```
-
-# Built-in Infrastructure
-
-## CircleCI config
-
-The `.circleci/config.yml` file provides automated build and test.
-
-## Pre-commit hooks
+## Initialize Pre-commit hooks
 
 For more info: https://pre-commit.com/
 
@@ -119,3 +105,53 @@ pre-commit run --all-files
 ```
 
 To add new hooks, edit the file `.pre-commit-config.yaml`
+
+## Add your data
+
+The first thing to do is add the raw data. Put it in data/raw and use the dvc add command eg.
+
+```bash
+cp raw_data.csv to data/raw/
+dvc add data/raw/raw_data.csv
+```
+
+# Build the project
+
+## Build the environment
+
+For more info see: https://docs.conda.io/projects/conda/en/latest/user-guide/index.html
+
+Build the conda environment:
+
+```bash
+conda env create -f environment.yml
+```
+
+For convenience, a makefile provides some recipes for common tasks
+
+```bash
+# builds or updates environment. Dumps precise environment definition to environment.lock
+make environment.lock
+```
+
+## Downloading the data
+
+Use the DVC pull and push commands to pull the data files from the cache. The DVC docker container can be used for this:
+
+```bash
+dvc pull
+```
+
+## Train the model (example)
+
+To build the project, run
+
+```bash
+docker-compose run dvc repro
+```
+
+# Testing
+
+## CircleCI config
+
+The `.circleci/config.yml` file provides automated build and test.

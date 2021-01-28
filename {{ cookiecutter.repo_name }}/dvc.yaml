@@ -4,8 +4,7 @@ stages:
       python src/models/train.py \
         --params params.yaml
     deps:
-      - Pipfile.lock
-      - src/train.py
+      - src/models/train.py
     params:
       - random_seed
       - priors
