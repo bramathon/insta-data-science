@@ -14,13 +14,26 @@ jobs:
           name: install dependencies
           command: |
             conda env create -f environment.yml
-      # Step 3: run linter and tests
+      # Step 3: run unit tests
       - run:
-          name: run tests
+          name: Unit Tests
           command: |
-            conda init bash
             source activate {{ cookiecutter.repo_name }}
             python -m unittest test.basic_tests
+      # This step requires 'production-aws' context to provide AWS credentials
+      # Step 4: run dvc repro
+      # - run:
+      #     name: DVC Reproduce
+      #     context: production-aws
+      #     command: |
+      #       source activate apnea
+      #       dvc pull
+      #       dvc repro
+      #       if [ -n "$(dvc diff)" ]
+      #       then
+      #         echo 'Something changed!'
+      #         exit 1
+      #       fi      
             
 workflows:
   workflow:

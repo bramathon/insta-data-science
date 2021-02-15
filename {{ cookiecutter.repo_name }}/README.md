@@ -147,7 +147,13 @@ dvc pull
 To build the project, run
 
 ```bash
-docker-compose run dvc repro
+dvc repro
+```
+
+DVC can add pre-commit hooks as well:
+
+```bash
+dvc install --use-pre-commit-tool
 ```
 
 # Testing

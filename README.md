@@ -1,4 +1,4 @@
-# Cookiecutter Data Science
+# Insta Data Science
 
 _A template for doing data science project, based on cookiecutter-data-science. Modified to use a conda and DVC based workflow_
 

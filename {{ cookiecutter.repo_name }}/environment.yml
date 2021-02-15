@@ -14,13 +14,14 @@ dependencies:
   - awscli
   - black
   - dvc
+  - python-language-server
   - pre-commit
   - jupyterlab
-  - jupyterlab-git
+  - jupyterlab-git>=3.0.0
 
   # Machine-learning
   - scikit-learn
-  - tensorflow-gpu
+  - tensorflow-gpu=2.2
   - xgboost
   
   # Plotting
@@ -33,4 +34,4 @@ dependencies:
   - pip:
       - wandb
       - virtualenv==20.0.23 # pre-commit doesn't work with default version
-      - python-language-server[all]
+      - -e .

@@ -33,12 +33,10 @@ endif
 
 ## Build Jupyter Lab
 jupyter: test_environment
-	$(MY_ENV_DIR)/bin/jupyter labextension install @jupyter-widgets/jupyterlab-manager
+	$(MY_ENV_DIR)/bin/jupyter labextension uninstall --all
 	$(MY_ENV_DIR)/bin/jupyter labextension install jupyterlab-plotly
-	$(MY_ENV_DIR)/bin/jupyter labextension install plotlywidget
-	$(MY_ENV_DIR)/bin/jupyter labextension install jupyterlab-theme-solarized-dark
-	$(MY_ENV_DIR)/bin/jupyter lab build --name "$(PROJECT_NAME)"
-
+	$(MY_ENV_DIR)/bin/jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget@4.14.3
+	$(MY_ENV_DIR)/bin/jupyter labextension install @krassowski/jupyterlab-lsp
 ## Lint using black
 lint:
 	black --verbose --target-version py38 .
