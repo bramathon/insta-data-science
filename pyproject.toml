@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "insta-data-science"
+version = "0.1.0"
+description = "A data science project"
+authors = ["Bram Evert <bram.evert@gmail.com>"]
+license = "MIT"
+packages = [
+    { include = "insta_data_science", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^1.4.0"
+numpy = "^1.22.1"
+plotly = "^5.5.0"
+kaleido = "^0.2.1"
+scikit-learn = "^1.0.2"
+scipy = "^1.7.3"
+dvc = "^2.9.3"
+matplotlib = "^3.5.1"
+
+[tool.poetry.dev-dependencies]
+jupyterlab = "^3.2.8"
+pytest = "^6.2.5"
+black = "^21.12b0"
+python-lsp-server = "^1.3.3"
+jupyterlab-lsp = "^3.10.0"
+jupyterlab-git = "^0.34.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
